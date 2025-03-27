@@ -10,7 +10,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
 const notesFilePath = path.join(__dirname, 'notes.json');
-
 let notes = [];
 if (fs.existsSync(notesFilePath)) {
     const data = fs.readFileSync(notesFilePath, 'utf8');
@@ -26,18 +25,20 @@ app.get('/', (req, res) => {
 });
 
 app.post('/add-note', (req, res) => {
-    const { note, category, color } = req.body;
+    const { note, category, color, important } = req.body;
     if (note) {
-        notes.push({ 
-            text: note, 
-            timestamp: new Date().toLocaleString(), 
+        notes.push({
+            text: note,
+            timestamp: new Date().toLocaleString(),
             category: category || null,
-            color: color || '#ffffff'
+            color: color || '#ffffff',
+            important: important === 'on'
         });
         saveNotesToFile();
     }
     res.redirect('/');
 });
+
 app.post('/delete-note', (req, res) => {
     const { index } = req.body;
     if (index !== undefined) {
@@ -46,6 +47,7 @@ app.post('/delete-note', (req, res) => {
     }
     res.redirect('/');
 });
+
 app.post('/edit-note', (req, res) => {
     const { index, newText } = req.body;
     if (index !== undefined && newText) {
@@ -55,10 +57,10 @@ app.post('/edit-note', (req, res) => {
     res.redirect('/');
 });
 
-app.post('/change-color', (req, res) => {
-    const { index, newColor } = req.body;
-    if (index !== undefined && newColor) {
-        notes[index].color = newColor;
+app.post('/toggle-important', (req, res) => {
+    const { index } = req.body;
+    if (index !== undefined) {
+        notes[index].important = !notes[index].important;
         saveNotesToFile();
     }
     res.redirect('/');

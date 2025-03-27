@@ -12,11 +12,15 @@
         <input type="text" name="note" placeholder="Enter a note" required>
         <input type="text" name="category" placeholder="Category (optional)">
         <input type="color" name="color" value="#ffffff">
+        <label>
+            <input type="checkbox" name="important"> Mark as Important
+        </label>
         <button type="submit">Add Note</button>
     </form>
     <ul>
         <% notes.forEach((note, index) => { %>
             <li style="background-color: <%= note.color %>;">
+                <strong><%= note.important ? '⭐ ' : '' %></strong>
                 <%= note.text %> - <%= note.timestamp %> 
                 <% if (note.category) { %> [<%= note.category %>] <% } %>
                 <form action="/edit-note" method="POST" style="display:inline;">
@@ -28,7 +32,10 @@
                     <input type="hidden" name="index" value="<%= index %>">
                     <button type="submit">Delete</button>
                 </form>
-
+                <form action="/toggle-important" method="POST" style="display:inline;">
+                    <input type="hidden" name="index" value="<%= index %>">
+                    <button type="submit"><%= note.important ? 'Unmark' : 'Mark' %> Important</button>
+                </form>
             </li>
         <% }) %>
     </ul>
