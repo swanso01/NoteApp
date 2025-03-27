@@ -21,7 +21,7 @@ function saveNotesToFile() {
 }
 
 app.get('/', (req, res) => {
-    res.render('index', { title: 'Simple Notes App', notes });
+    res.render('index', { title: 'Notes App', notes });
 });
 
 app.post('/add-note', (req, res) => {
@@ -64,6 +64,7 @@ app.post('/toggle-important', (req, res) => {
         saveNotesToFile();
     }
     res.redirect('/');
+
 });
 
 app.listen(port, () => {
